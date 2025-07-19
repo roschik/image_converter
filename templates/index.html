@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <h1 class="mb-4">Преобразование изображения путем сдвига по часовой стрелке</h1>
+        <div class="card">
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="fileInput" class="form-label">Выберите изображение</label>
+                        <input class="form-control" type="file" name="file" id="fileInput" accept="image/*" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Обработать</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

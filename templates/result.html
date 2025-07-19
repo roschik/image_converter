@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Результат обработки{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1 class="mb-4">Результат обработки</h1>
+        <a href="/" class="btn btn-secondary mb-4">Назад</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="image-box">
+            <h3>Оригинал</h3>
+            <img src="{{ url_for('static', filename='uploads/' + original) }}" class="img-fluid">
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="image-box">
+            <h3>Результат</h3>
+            <img src="{{ url_for('static', filename='uploads/' + result) }}" class="img-fluid">
+        </div>
+    </div>
+    <div class="col-12 mt-3">
+        <div class="image-box">
+            <h3>График распределения цветов</h3>
+            <img src="data:image/png;base64,{{ plot_url }}" class="plot-img">
+        </div>
+    </div>
+</div>
+{% endblock %}
