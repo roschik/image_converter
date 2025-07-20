@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, jsonify
 from werkzeug.utils import secure_filename
 from PIL import Image
 import numpy as np
@@ -6,12 +6,25 @@ import matplotlib.pyplot as plt
 import os
 import io
 import base64
+import requests
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg'}
+app.config['RECAPTCHA_SITE_KEY'] = '6LcqkYgrAAAAAK6MIYHkrPWGsqWm9MjXKX3XMeFo'
+app.config['RECAPTCHA_SECRET_KEY'] = '6LcqkYgrAAAAACzxxmSDJDXhIUUveuqQl8hHT8If'
+
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+def verify_recaptcha(token):
+    response = requests.post(
+        'https://www.google.com/recaptcha/api/siteverify',
+        data={
+            'secret': app.config['RECAPTCHA_SECRET_KEY'],
+            'response': token
+        }
+    )
+    return response.json().get('success', False)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -64,6 +77,18 @@ def process_image(image_path):
 @app.route('/', methods=['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
+        # Проверка reCAPTCHA
+        captcha_token = request.form.get('g-recaptcha-response')
+
+        # Проверяем, был ли передан токен
+        if not captcha_token:
+            return "Ошибка: токен reCAPTCHA не получен", 400
+
+        # Проверяем валидность токена
+        if not verify_recaptcha(captcha_token):
+            return "Пожалуйста, подтвердите, что вы не робот", 400
+
+        # Обработка файла
         if 'file' not in request.files:
             return redirect(request.url)
 

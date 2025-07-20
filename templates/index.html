@@ -11,7 +11,31 @@
                         <label for="fileInput" class="form-label">Выберите изображение</label>
                         <input class="form-control" type="file" name="file" id="fileInput" accept="image/*" required>
                     </div>
-                    <button type="submit" class="btn btn-primary">Обработать</button>
+                    <div class="g-recaptcha" data-sitekey="6LcqkYgrAAAAAK6MIYHkrPWGsqWm9MjXKX3XMeFo" data-callback="recaptchaCallback"></div>
+                    <button type="submit" id="submit-btn" class="btn btn-primary">Обработать</button>
+
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                    <script>
+                        var isCaptchaValid = false;
+
+                        function recaptchaCallback() {
+                            isCaptchaValid = true;
+                            updateSubmitButton();
+                        }
+
+                        function updateSubmitButton() {
+                            const btn = document.getElementById('submit-btn');
+                            if(isCaptchaValid && document.querySelector('input[type="file"]').value) {
+                                btn.disabled = false;
+                                btn.title = "";
+                            } else {
+                                btn.disabled = true;
+                                btn.title = "Загрузите файл и пройдите капчу";
+                            }
+                        }
+
+                        document.querySelector('input[type="file"]').addEventListener('change', updateSubmitButton);
+                    </script>
                 </form>
             </div>
         </div>
