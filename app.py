@@ -36,6 +36,9 @@ def process_image(image_path):
 
     # Разбиение на 4 части
     h, w = img_array.shape[0], img_array.shape[1]
+    h = h - 1 if h % 2 != 0 else h
+    w = w - 1 if w % 2 != 0 else w
+    img_array = img_array[:h, :w]
     parts = [
         img_array[:h // 2, :w // 2],  # NW
         img_array[:h // 2, w // 2:],  # NE
